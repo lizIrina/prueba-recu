@@ -7,7 +7,7 @@ def home():
     return """
     <html>
         <head>
-            <title>matth calculator</title>
+            <title>irina recuperacion</title>
             <style>
                 body {
                     background: #121212;
