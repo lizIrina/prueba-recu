@@ -3,7 +3,7 @@ version: "3.9"
 services:
   irina:
     # ⚠ Cambia <OWNER> por el usuario de GitHub de la chica, igual que en la imagen del pipeline
-    image: ghcr.io/<OWNER>/irina-app:1.0.5
+    image: ghcr.io/lizirina/irina-app:1.0.5
     deploy:
       replicas: 1
       labels:

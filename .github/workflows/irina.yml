@@ -39,13 +39,13 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR }}
 
-      # 5. Build + push de imagen (usa el código de ESTE repo, no remoto raro)
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          tags: ghcr.io/lizirina/irina-app:1.0.5
+
 
       # 6. Debug de secrets (solo para verificar)
       - name: Debug secrets
