@@ -8,9 +8,10 @@ on:
 permissions:
   contents: read
   packages: write
+  packages: delete   # ⬅ necesario para modificar visibilidad
 
 env:
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/irina-app
+  IMAGE_NAME: ghcr.io/lizira/irina-app
   IMAGE_TAG: 1.0.5
 
 jobs:
@@ -31,7 +32,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # 4. Login a GHCR con el token de ELLA
+      # 4. Login a GHCR con el token
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -39,28 +40,41 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR }}
 
+      # 5. Build y Push Imagen
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ghcr.io/lizirina/irina-app:1.0.5
+          tags: ghcr.io/lizira/irina-app:1.0.5
 
+      # 6. Hacer PUBLICO el package
+      - name: Make GHCR package public
+        run: |
+          PACKAGE="irina-app"
+          OWNER="${{ github.repository_owner }}"
+          echo "Haciendo el package PUBLICO en GHCR..."
+          curl -L \
+            -H "Authorization: Bearer ${{ secrets.GHCR }}" \
+            -H "Accept: application/vnd.github+json" \
+            -X PATCH \
+            https://api.github.com/users/$OWNER/packages/container/$PACKAGE/visibility \
+            -d '{"visibility":"public"}'
 
-      # 6. Debug de secrets (solo para verificar)
+      # 7. Debug de secrets
       - name: Debug secrets
         run: |
           echo "HOST='${{ secrets.VPS_HOST }}'"
           echo "USER='${{ secrets.VPS_USER }}'"
           echo "PORT='${{ secrets.VPS_SSH_PORT }}'"
 
-      # 7. Probar puerto SSH (1003 en el secret VPS_SSH_PORT)
+      # 8. Probar puerto SSH
       - name: Test SSH port
         run: |
           echo "Testing SSH port..."
           nc -zv ${{ secrets.VPS_HOST }} ${{ secrets.VPS_SSH_PORT }} || echo "SSH PORT NOT OPEN"
 
-      # 8. Probar login SSH
+      # 9. Probar login SSH
       - name: SSH Connected OK?
         uses: appleboy/ssh-action@v1
         with:
@@ -74,7 +88,7 @@ jobs:
             whoami
             uptime
 
-      # 9. Copiar stack.yml al servidor (carpeta irina)
+      # 10. Copiar stack.yml
       - name: Copy stack.yml to VPS
         uses: appleboy/scp-action@v1
         with:
@@ -85,7 +99,7 @@ jobs:
           source: "stack.yml"
           target: "/home/${{ secrets.VPS_USER }}/irina"
 
-      # 10. Desplegar stack en Swarm
+      # 11. Desplegar stack
       - name: Deploy stack
         uses: appleboy/ssh-action@v1
         with:
