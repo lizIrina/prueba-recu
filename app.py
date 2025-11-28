@@ -16,8 +16,14 @@ def home():
                     text-align: center;
                     padding-top: 80px;
                 }
-                h1 { font-size: 50px; margin-bottom: 15px; }
-                p { font-size: 22px; opacity: .8; }
+                h1 {
+                    font-size: 50px;
+                    margin-bottom: 15px;
+                }
+                p {
+                    font-size: 22px;
+                    opacity: .8;
+                }
             </style>
         </head>
         <body>

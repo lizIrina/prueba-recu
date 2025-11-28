@@ -3,7 +3,8 @@ APP_NAME=irina
 STACK_NAME=irina
 STACK_FILE=stack.yml
 
-IMAGE=ghcr.io/matth23-sys/irina-app:1.0.5
+# ⚠ Cambia <OWNER> por el usuario de GitHub de la chica, ej: lizirina (todo minúsculas)
+IMAGE=ghcr.io/<OWNER>/irina-app:1.0.5
 
 build:
 	docker build -t $(APP_NAME):latest .
